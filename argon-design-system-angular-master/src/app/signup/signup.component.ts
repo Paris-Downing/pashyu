@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-signup',
@@ -17,7 +18,7 @@ export class SignupComponent implements OnInit {
     @Input()
     isStrong = false;
 
-    constructor(public firebaseAuth : AngularFireAuth) { }
+    constructor(public firebaseAuth : AngularFireAuth, private router: Router) { }
 
     ngOnInit() {
         if(localStorage.getItem('user') !== null) {
@@ -37,6 +38,7 @@ export class SignupComponent implements OnInit {
         try {
             this.firebaseAuth.createUserWithEmailAndPassword(email, password);
             this.isLoggedIn = true;
+            this.router.navigate(['/tree'])
         }
         catch(errorCode){
             if(errorCode == "auth/email-already-in-use"){
