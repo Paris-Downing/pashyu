@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit {
 
   //credentials: test@test.com test123
 
-  constructor(public firebaseAuth : AngularFireAuth) { }
+  constructor(public firebaseAuth : AngularFireAuth, private router: Router) { }
 
     ngOnInit() {
       if(localStorage.getItem('user') !== null) {
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
             this.firebaseAuth.signInWithEmailAndPassword(email, password);
             this.isLoggedIn = true;
             console.log("YOU ARE LOGGED IN")
+            this.router.navigate(['/tree'])
         }
         catch(errorCode){
             // if(errorCode == "auth/email-already-in-use"){
