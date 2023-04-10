@@ -59,7 +59,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input id="#passwordSignUp" class="form-control" placeholder="Password" type="password" #passwordSignUp [value]="password" (change)="checkStrength()" (focus)="focus2=true" (blur)="focus2=false">
+                    <input id="#passwordSignUp" class="form-control" placeholder="Password" type="password" #passwordSignUp [(ngModel)]='password' (input)="checkStrength($event)" (focus)="focus2=true" (blur)="focus2=false">
                   </div>
                 </div>
                 <div class="text-muted font-italic">
