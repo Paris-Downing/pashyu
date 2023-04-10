@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "pashto-app-5fa83": {
+      "hosting": {
+        "argon-design-system-angular": [
+          "pashto-app-5fa83"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "pashto-app-5fa83"
+  }
+}

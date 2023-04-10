@@ -9,6 +9,7 @@ import { SignupComponent } from './signup/signup.component';
 import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
 import { TreeComponent } from './tree/tree.component';
+import { Lesson1Component } from './lesson1/lesson1.component';
 
 const routes: Routes =[
     { path: 'home',             component: HomeComponent },
@@ -17,6 +18,7 @@ const routes: Routes =[
     { path: 'landing',          component: LandingComponent },
     { path: 'login',          component: LoginComponent },
     { path: 'tree',          component: TreeComponent },
+    { path: 'lesson1',          component: Lesson1Component },
     { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 
