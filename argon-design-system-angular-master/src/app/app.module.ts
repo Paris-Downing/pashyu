@@ -22,6 +22,7 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { Lesson1Component } from './lesson1/lesson1.component';
+import { Chapter1Component } from './chapter1/chapter1.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { Lesson1Component } from './lesson1/lesson1.component';
     FooterComponent,
     LoginComponent,
     TreeComponent,
-    Lesson1Component
+    Lesson1Component,
+    Chapter1Component,
   ],
   imports: [
     BrowserModule,
