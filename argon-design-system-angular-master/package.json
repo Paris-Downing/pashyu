@@ -26,6 +26,7 @@
     "@angular/router": "^15.2.6",
     "@ng-bootstrap/ng-bootstrap": "12.0.1",
     "@popperjs/core": "^2.11.4",
+    "core-js": "^3.30.0",
     "firebase": "^9.15.0",
     "jw-bootstrap-switch-ng2": "2.0.5",
     "moment": "^2.29.1",
