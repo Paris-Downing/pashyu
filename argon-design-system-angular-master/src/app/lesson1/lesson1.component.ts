@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { initializeApp } from "firebase/app";
-import { addDoc, getFirestore } from "firebase/firestore";
+import { DocumentData, QuerySnapshot, addDoc, getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 
 
@@ -9,7 +9,16 @@ import { collection, getDocs } from "firebase/firestore";
   templateUrl: './lesson1.component.html',
   styleUrls: ['./lesson1.component.css']
 })
+// interface Question {
+//   answer: string;
+//   lesson: number;
+//   question: string;
+//   questionNumber: number
+//   questionType: number
+//  }
 export class Lesson1Component {
+  questions : DocumentData[] = [];
+  questionNumber = 1;
   firebaseConfig = {
     apiKey: "AIzaSyAonyugX8VwhZmnQbVADw-wgxg4XCHJgzE",
     authDomain: "pashto-app-5fa83.firebaseapp.com",
@@ -33,7 +42,13 @@ export class Lesson1Component {
     const querySnapshot = await getDocs(collection(this.db, "chapter 1"));
 
     querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data().question}`);
+      // console.log(`${doc.id} => ${doc.data().question}`);
+      // this.questions = [
+      //   ...this.questions.slice(0, doc.data().questionNumber),
+      //   doc,
+      //   ...this.questions.slice(doc.data().questionNumber)
+      // ]
+      this.questions.push(doc.data());
     });
   }
 
@@ -45,11 +60,11 @@ export class Lesson1Component {
   public async write() {
     try {
       const docRef = await addDoc(collection(this.db, "chapter 1"), {
-        answer: "am",
+        answer: "Za Asad yam. Aya ta Leila ye?",
         lesson: 1,
-        question: "yam",
-        questionNumber: 2,
-        questionType: 1
+        question: "I am Asad. Are you Leila?",
+        questionNumber: 18,
+        questionType: 3
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -57,10 +72,24 @@ export class Lesson1Component {
     }
   }
 
-
-  ngOnInit() {
-    this.read();
+  public next(){
+    this.questionNumber+=1;
+    
   }
 
+  public findQuestion(questionNumber: number): DocumentData{
+    for (let i = 0; i < this.questions.length; i++) {
+      if(this.questions[i].questionNumber == this.questionNumber){
+        return this.questions[i];
+      }
+    }
+  }
 
+  async ngOnInit() {
+    this.read();
+    console.log(this.questions)
+
+    await this.questions.sort((a,b) => a.questionNumber - b.questionNumber )
+    console.log(this.questions)
+  }
 }

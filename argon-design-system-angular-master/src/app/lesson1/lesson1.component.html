@@ -1,1 +1,30 @@
-<h1>HI</h1>
+<main class="profile-page">
+    <section class="section-profile-cover section-shaped my-0">
+      <!-- Circles background -->
+      <div class="shape shape-style-1 shape-primary alpha-4">
+        <span></span>
+        <span></span>
+      </div>
+    </section>
+    <section>
+        <div class="form-group">
+            <div *ngIf="findQuestion(questionNumber).questionType == 1">
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).question}}</h1>
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).answer}}</h1>
+            </div>
+            <div *ngIf="findQuestion(questionNumber).questionType == 2">
+                <h3 style="text-align: center;">Translate this to English.</h3>
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).question}}</h1>
+                <center style="margin-bottom: 1%"><input type="text" /></center>
+            </div>
+            <div *ngIf="findQuestion(questionNumber).questionType == 3">
+                <h3 style="text-align: center;">Translate this to Pashto.</h3>
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).question}}</h1>
+                <center style="margin-bottom: 1%"><input type="text" /></center>
+            </div>
+            <div style="width: fit-content; margin: auto">
+                <button  class="button" type="submit" (click)="next()">Next</button>
+            </div>
+          </div>
+    </section>
+</main>

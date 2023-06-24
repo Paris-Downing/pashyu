@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
 
   //credentials: test@test.com test123
+  //test@testid.com test@testid.com
 
   constructor(public firebaseAuth : AngularFireAuth, private router: Router) { }
 
