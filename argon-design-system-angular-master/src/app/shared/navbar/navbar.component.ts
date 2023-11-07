@@ -53,4 +53,9 @@ export class NavbarComponent implements OnInit {
             return false;
         }
     }
+
+    checkPage(): boolean {
+        //also check to make sure they aren't already logged in
+        return this.router.url !== '/login' && this.router.url !== '/register';
+    }
 }

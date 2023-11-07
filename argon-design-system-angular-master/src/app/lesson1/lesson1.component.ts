@@ -19,6 +19,13 @@ import { collection, getDocs } from "firebase/firestore";
 export class Lesson1Component {
   questions : DocumentData[] = [];
   questionNumber = 1;
+  textbox1?: string = '';
+  textboxLocked: boolean = false;
+  showAlert: boolean = false;
+  alertType: string = "alert-success";  //success, warning, danger
+  alertMessage: string = "That's correct!";
+  incorrectQuestions: number[] = [];
+
   firebaseConfig = {
     apiKey: "AIzaSyAonyugX8VwhZmnQbVADw-wgxg4XCHJgzE",
     authDomain: "pashto-app-5fa83.firebaseapp.com",
@@ -72,8 +79,28 @@ export class Lesson1Component {
     }
   }
 
+  verifyAnswer(): void {
+    this.textboxLocked = true;
+    let amountOfMistakes = this.checkAnswer();
+    this.showAlert = true;  //set to false when continue button is pressed
+    if (amountOfMistakes >= 1) {
+      this.alertType = "alert-danger";
+      this.alertMessage = "Incorrect!";
+      this.incorrectQuestions.unshift(this.questionNumber);
+    } else if (amountOfMistakes > 0) {
+      this.alertType = "alert-warning";
+      this.alertMessage = "Correct!"
+    } else {
+      this.alertType = "alert-success";
+      this.alertMessage = "Correct!"
+    }
+    
+    // this.nextQuestion();
+  }
+
   public next(){
-    this.questionNumber+=1;
+    this.checkAnswer();
+    // this.questionNumber+=1;
     
   }
 
@@ -84,6 +111,75 @@ export class Lesson1Component {
       }
     }
   }
+
+  checkAnswer(): number {
+    //1) Removes punctuation
+    let modifiedSentence1 = this.findQuestion(this.questionNumber).answer?.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"");
+    let modifiedSentence2 = this.textbox1?.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"");
+
+    //2) Removes capitalization
+    modifiedSentence1 = modifiedSentence1?.toLowerCase();
+    modifiedSentence2 = modifiedSentence2?.toLowerCase();
+
+    if((modifiedSentence1 === undefined) || (modifiedSentence2 === undefined))
+      return 100;
+
+    //3) Removes extra spacing
+    const sentence1 = modifiedSentence1.replace(/  +/g, ' ');
+    const sentence2 = modifiedSentence2.replace(/  +/g, ' ');
+
+    //4) Accepts 1 missing letter, 1 extra letter, 1 incorrect letter 
+    return this.checkSentence(sentence1, sentence2, 1); 
+  }
+
+  checkSentence(sentence1: string, sentence2: string, mistakesAllowed: number): number {
+    if(sentence1.length === sentence2.length)
+    {
+      if(sentence1 === sentence2) { 
+        // console.log("ERROR TYPE 1"); //both sentences are the same
+        return 0; 
+      } else {
+        for(let i = 0; i < sentence1.length; i++) { 
+          if(sentence1.charAt(i) != sentence2.charAt(i)) { 
+              mistakesAllowed--; 
+              if(mistakesAllowed < 0) { 
+                // console.log("ERROR TYPE 2");  //a word had at least 2 wrong letters
+                  return 1; 
+              }
+          }
+        }
+        // console.log("ERROR TYPE 3"); //a letter was typed wrong/without an accent
+        return .5;
+      }
+    } else if ((sentence1.length + 1 === sentence2.length) || (sentence2.length + 1 === sentence1.length)) {
+        for(let i = 0, j = 0; i < sentence1.length || j < sentence2.length; i++, j++) { 
+          if(sentence1.charAt(i) != sentence2.charAt(i)) { 
+              mistakesAllowed--; 
+              if(mistakesAllowed < 0) { 
+                  // console.log("ERROR TYPE 4");  //there were too many extra or missing letters
+                  return 1; 
+              }
+              if(sentence1.length + 1 === sentence2.length) {
+                j++;
+              } else { 
+                i++; 
+              }
+          }
+        }
+      // console.log("ERROR TYPE 5");
+      return .5;  //there was only one missing or extra letter
+    } else {
+      // console.log("ERROR TYPE 6");  //the words didn't match at all
+      return 1;
+    }
+  }
+
+  nextQuestion(): void {
+    this.textbox1 = '';
+    this.textboxLocked = false;
+    this.showAlert = false;
+    this.next();
+}
 
   async ngOnInit() {
     this.read();
