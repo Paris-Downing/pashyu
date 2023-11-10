@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from '@angular/router';
 
@@ -14,6 +14,7 @@ export class SignupComponent implements OnInit {
     focus2;
     isLoggedIn = false;
     alert="";
+    @Input()
     password = '';
     @Input()
     isStrong = false;
@@ -26,11 +27,14 @@ export class SignupComponent implements OnInit {
           }
     }
 
-    public checkStrength() {
-        if(this.password.length < 10)
-            this.isStrong = false;
-        else   
+    //currently only works as long as one character has been typed for (input) and (keyup). (change) only works when you click enter
+    //none work when the < sign is flipped
+    public checkStrength(event: any) {
+        console.log("CHECK STRENGTH CALLED", this.password)
+        if(this.password.length > 5)
             this.isStrong = true;
+        else   
+            this.isStrong = false;
         //if it contains a number, a capital letter, and is more than 10 characters long, it is strong. Change isStrong= true; else, false;
     }
 

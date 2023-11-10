@@ -116,6 +116,16 @@
               "**/node_modules/**"
             ]
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "argon-design-system-angular:build:production",
+            "firebaseProject": "pashto-app-5fa83",
+            "firebaseHostingSite": "pashto-app-5fa83"
+          }
         }
       }
     },
@@ -147,7 +157,6 @@
       }
     }
   },
-  "defaultProject": "argon-design-system-angular",
   "cli": {
     "analytics": false
   }

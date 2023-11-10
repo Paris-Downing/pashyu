@@ -1,0 +1,63 @@
+<main class="profile-page">
+    <section class="section-profile-cover section-shaped my-0">
+        <!-- Circles background -->
+        <div class="shape shape-style-1 shape-primary alpha-4">
+            <span></span>
+            <span></span>
+        </div>
+    </section>  
+    <section style="padding-top: 10%; padding-bottom: 10%;">
+        <div class="form-group">
+            <div *ngIf="findQuestion(questionNumber).questionType === 1">
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).question}}</h1>
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).answer}}</h1>
+            </div>
+
+            <div *ngIf="findQuestion(questionNumber).questionType === 2">
+                <h3 style="text-align: center;">Translate this to English.</h3>
+            </div>
+
+            <div *ngIf="findQuestion(questionNumber).questionType === 3">
+                <h3 style="text-align: center;">Translate this to Pashto.</h3>
+            </div>
+
+            <div *ngIf="findQuestion(questionNumber).questionType !== 1">
+                <h1 style="text-align: center;">{{findQuestion(questionNumber).question}}</h1>
+                <div class="row justify-content-md-center pad" style="padding-bottom: 40px;">
+                    <div class="col col-lg-6">
+                        <textarea [(ngModel)]="textbox1" [disabled]="textboxLocked" input="text"
+                            class="form-control z-depth-1" id="textbox1" rows="6" placeholder="Write something here...">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-md-center pad" style="padding-top: 2%;">
+                <div class="col col-lg-6">
+                    <div class="center padding">
+                        <button style="margin-top: 60%; margin-bottom: 60%;" *ngIf="!showAlert && findQuestion(questionNumber).questionType === 1" (click)="nextQuestion()"
+                            class="btn btn-success">
+                            Next
+                        </button>
+                        <button *ngIf="!showAlert && findQuestion(questionNumber).questionType !== 1" [disabled]="textbox1 ==='' " (click)="verifyAnswer()"
+                            class="btn btn-success">
+                            Verify
+                        </button>
+                    </div>
+                </div>
+            </div>
+                
+            <div *ngIf="showAlert">
+                <div uib-alert  [ngClass]="alertType" class="rounded" style="text-indent: 10px;">
+                    {{ alertMessage }}
+                    <p *ngIf="alertType === 'alert-danger' || alertType === 'alert-warning' ">{{ answerText }}</p>
+                </div>
+                <div style="padding-top: 5%;" class="padding">
+                    <button class="center" (click)="nextQuestion()" class="btn btn-success">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

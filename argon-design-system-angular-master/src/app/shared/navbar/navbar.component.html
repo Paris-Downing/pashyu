@@ -73,6 +73,8 @@
             <a [routerLink]="['/login']" class="dropdown-item">Login</a>
             <a [routerLink]="['/register']" class="dropdown-item">Register</a>
             <a [routerLink]="['/tree']" class="dropdown-item">Tree</a>
+            <a [routerLink]="['/chapter1']" class="dropdown-item">Chapter</a>
+            <a [routerLink]="['/lesson1']" class="dropdown-item">Lesson</a>
           </div>
         </li>
       </ul>
@@ -103,7 +105,7 @@
           </a>
         </li>
       -->
-        <li class="nav-item d-none d-lg-block ml-lg-4">
+        <li *ngIf="checkPage()" class="nav-item d-none d-lg-block ml-lg-4">
           <a [routerLink]="['/login']" class="btn btn-neutral btn-icon">
             <!-- <span class="btn-inner--icon">
               <i class="fa fa-cloud-download mr-2"></i>
