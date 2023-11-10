@@ -19,8 +19,8 @@ const routes: Routes =[
     { path: 'landing',          component: LandingComponent },
     { path: 'login',            component: LoginComponent },
     { path: 'tree',             component: TreeComponent },
-    { path: 'lesson1',          component: Lesson1Component },
-    { path: 'chapter1',         component: Chapter1Component },
+    { path: 'lesson/:id',       component: Lesson1Component },
+    { path: 'chapter/:id',      component: Chapter1Component },
     { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

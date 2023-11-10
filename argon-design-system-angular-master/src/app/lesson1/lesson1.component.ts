@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { initializeApp } from "firebase/app";
 import { DocumentData, QuerySnapshot, addDoc, getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
@@ -25,6 +26,8 @@ export class Lesson1Component {
   alertType: string = "alert-success";  //success, warning, danger
   alertMessage: string = "That's correct!";
   incorrectQuestions: number[] = [];
+  answerText: string = '';
+  currentLesson: number;
 
   firebaseConfig = {
     apiKey: "AIzaSyAonyugX8VwhZmnQbVADw-wgxg4XCHJgzE",
@@ -43,10 +46,15 @@ export class Lesson1Component {
   // Initialize Cloud Firestore and get a reference to the service
   db = getFirestore(this.app);
 
+  constructor(private route: ActivatedRoute) {}
 
 
   public async read() {
-    const querySnapshot = await getDocs(collection(this.db, "chapter 1"));
+    var chapterNumber = ((this.currentLesson - (this.currentLesson % 6)) / 6) + 1;
+    // console.log("CURRENT CHAPTER", chapterNumber)
+    // var chapterVar = "chapter ".toString();
+    // var chapterString = chapterVar.concat(chapterNumber.toString());
+    const querySnapshot = await getDocs(collection(this.db, "chapter " + chapterNumber.toString()));
 
     querySnapshot.forEach((doc) => {
       // console.log(`${doc.id} => ${doc.data().question}`);
@@ -55,7 +63,9 @@ export class Lesson1Component {
       //   doc,
       //   ...this.questions.slice(doc.data().questionNumber)
       // ]
-      this.questions.push(doc.data());
+      if(doc.data().lesson.toString() === this.currentLesson.toString()) {
+        this.questions.push(doc.data());
+      }
     });
   }
 
@@ -89,19 +99,11 @@ export class Lesson1Component {
       this.incorrectQuestions.unshift(this.questionNumber);
     } else if (amountOfMistakes > 0) {
       this.alertType = "alert-warning";
-      this.alertMessage = "Correct!"
+      this.alertMessage = "(Mostly) Correct!"
     } else {
       this.alertType = "alert-success";
       this.alertMessage = "Correct!"
     }
-    
-    // this.nextQuestion();
-  }
-
-  public next(){
-    this.checkAnswer();
-    // this.questionNumber+=1;
-    
   }
 
   public findQuestion(questionNumber: number): DocumentData{
@@ -112,9 +114,11 @@ export class Lesson1Component {
     }
   }
 
+  //edits a sentence to get rid of punctuation and spacing errors
   checkAnswer(): number {
     //1) Removes punctuation
-    let modifiedSentence1 = this.findQuestion(this.questionNumber).answer?.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"");
+    this.answerText = this.findQuestion(this.questionNumber).answer;  
+    let modifiedSentence1 = this.answerText.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"");
     let modifiedSentence2 = this.textbox1?.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g,"");
 
     //2) Removes capitalization
@@ -128,10 +132,16 @@ export class Lesson1Component {
     const sentence1 = modifiedSentence1.replace(/  +/g, ' ');
     const sentence2 = modifiedSentence2.replace(/  +/g, ' ');
 
-    //4) Accepts 1 missing letter, 1 extra letter, 1 incorrect letter 
-    return this.checkSentence(sentence1, sentence2, 1); 
+    //4) Accepts 1 missing letter, 1 extra letter, 1 mistake for every 2-3 words
+    return this.checkSentence(sentence1, sentence2, this.allowedMistakes(modifiedSentence1)); 
   }
 
+  allowedMistakes(modifiedSentence1: string): number {
+    var spaceCount = modifiedSentence1.split(" ").length - 1;
+    return Math.floor(spaceCount / 2);
+  }
+
+  //checks how many serious errors are in the sentence 
   checkSentence(sentence1: string, sentence2: string, mistakesAllowed: number): number {
     if(sentence1.length === sentence2.length)
     {
@@ -145,7 +155,7 @@ export class Lesson1Component {
               if(mistakesAllowed < 0) { 
                 // console.log("ERROR TYPE 2");  //a word had at least 2 wrong letters
                   return 1; 
-              }
+              } 
           }
         }
         // console.log("ERROR TYPE 3"); //a letter was typed wrong/without an accent
@@ -174,16 +184,23 @@ export class Lesson1Component {
     }
   }
 
+  //clears the message after Correct/Incorrect was shown
   nextQuestion(): void {
     this.textbox1 = '';
     this.textboxLocked = false;
     this.showAlert = false;
-    this.next();
-}
+    this.questionNumber += 1;
+    this.answerText = '';
+    // this.checkAnswer();
+  }
 
   async ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.currentLesson = params['id'];
+    });
+    console.log("FIRST ONE", this.currentLesson)
     this.read();
-    console.log(this.questions)
+    console.log(this.questions) 
 
     await this.questions.sort((a,b) => a.questionNumber - b.questionNumber )
     console.log(this.questions)

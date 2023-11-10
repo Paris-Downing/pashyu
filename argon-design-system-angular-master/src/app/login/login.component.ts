@@ -17,23 +17,23 @@ export class LoginComponent implements OnInit {
 
   constructor(public firebaseAuth : AngularFireAuth, private router: Router) { }
 
-    ngOnInit() {
-      if(localStorage.getItem('user') !== null) {
-        this.isLoggedIn = true;
-      }
+  ngOnInit() {
+    if(localStorage.getItem('user') !== null) {
+      this.isLoggedIn = true;
     }
+  }
 
-    public logIn (email: string, password: string){
-        try {
-            this.firebaseAuth.signInWithEmailAndPassword(email, password);
-            this.isLoggedIn = true;
-            console.log("YOU ARE LOGGED IN")
-            this.router.navigate(['/tree'])
-        }
-        catch(errorCode){
-            // if(errorCode == "auth/email-already-in-use"){
-            //     alert("Email already in use")
-            // }
-        }
+  public logIn (email: string, password: string){
+    try {
+      this.firebaseAuth.signInWithEmailAndPassword(email, password);
+      this.isLoggedIn = true;
+      console.log("YOU ARE LOGGED IN")
+      this.router.navigate(['/tree'])
     }
+    catch(errorCode){
+      // if(errorCode == "auth/email-already-in-use"){
+      //     alert("Email already in use")
+      // }
+    }
+  }
 }
