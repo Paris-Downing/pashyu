@@ -26,8 +26,11 @@ export class Lesson1Component {
   alertType: string = "alert-success";  //success, warning, danger
   alertMessage: string = "That's correct!";
   incorrectQuestions: number[] = [];
+  totalWrong: number = 0;
+  totalAnswerableQuestions: number = 0;
   answerText: string = '';
   currentLesson: number;
+  finished: boolean = false;
 
   firebaseConfig = {
     apiKey: "AIzaSyAonyugX8VwhZmnQbVADw-wgxg4XCHJgzE",
@@ -51,9 +54,6 @@ export class Lesson1Component {
 
   public async read() {
     var chapterNumber = ((this.currentLesson - (this.currentLesson % 6)) / 6) + 1;
-    // console.log("CURRENT CHAPTER", chapterNumber)
-    // var chapterVar = "chapter ".toString();
-    // var chapterString = chapterVar.concat(chapterNumber.toString());
     const querySnapshot = await getDocs(collection(this.db, "chapter " + chapterNumber.toString()));
 
     querySnapshot.forEach((doc) => {
@@ -65,6 +65,9 @@ export class Lesson1Component {
       // ]
       if(doc.data().lesson.toString() === this.currentLesson.toString()) {
         this.questions.push(doc.data());
+        if(doc.data().questionType.toString() !== '1') {
+          this.totalAnswerableQuestions += 1;
+        }
       }
     });
   }
@@ -97,6 +100,7 @@ export class Lesson1Component {
       this.alertType = "alert-danger";
       this.alertMessage = "Incorrect!";
       this.incorrectQuestions.unshift(this.questionNumber);
+      this.setTotalWrong();
     } else if (amountOfMistakes > 0) {
       this.alertType = "alert-warning";
       this.alertMessage = "(Mostly) Correct!"
@@ -106,6 +110,7 @@ export class Lesson1Component {
     }
   }
 
+  //returns the nth question (which are sorted in order)
   public findQuestion(questionNumber: number): DocumentData{
     for (let i = 0; i < this.questions.length; i++) {
       if(this.questions[i].questionNumber == this.questionNumber){
@@ -189,20 +194,31 @@ export class Lesson1Component {
     this.textbox1 = '';
     this.textboxLocked = false;
     this.showAlert = false;
-    this.questionNumber += 1;
     this.answerText = '';
-    // this.checkAnswer();
+
+    //decides the next question, and will redo the ones you got incorrect at the end
+    if ((this.questionNumber + 1 >= this.questions.length) && (this.incorrectQuestions.length === 0)) {
+      this.questionNumber = this.incorrectQuestions[0]
+    } else if(this.questionNumber + 1 >= this.questions.length) {
+      this.finished = true;
+    } else {
+      this.questionNumber += 1;
+    }
+  }
+
+  setTotalWrong() {
+    if (this.incorrectQuestions.length > this.totalWrong) {
+      this.totalWrong = this.incorrectQuestions.length;
+    }
   }
 
   async ngOnInit() {
     this.route.params.subscribe(params => {
       this.currentLesson = params['id'];
     });
-    console.log("FIRST ONE", this.currentLesson)
     this.read();
-    console.log(this.questions) 
 
     await this.questions.sort((a,b) => a.questionNumber - b.questionNumber )
-    console.log(this.questions)
+    // console.log(this.questions)
   }
 }

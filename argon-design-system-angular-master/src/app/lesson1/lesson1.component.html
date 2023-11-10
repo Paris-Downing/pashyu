@@ -6,7 +6,7 @@
             <span></span>
         </div>
     </section>  
-    <section style="padding-top: 10%; padding-bottom: 10%;">
+    <section *ngIf="!finished" style="padding-top: 10%; padding-bottom: 10%;">
         <div class="form-group">
             <div *ngIf="findQuestion(questionNumber).questionType === 1">
                 <h1 style="text-align: center;">{{findQuestion(questionNumber).question}}</h1>
@@ -35,7 +35,7 @@
             <div class="row justify-content-md-center pad" style="padding-top: 2%;">
                 <div class="col col-lg-6">
                     <div class="center padding">
-                        <button style="margin-top: 60%; margin-bottom: 60%;" *ngIf="!showAlert && findQuestion(questionNumber).questionType === 1" (click)="nextQuestion()"
+                        <button *ngIf="!showAlert && findQuestion(questionNumber).questionType === 1" (click)="nextQuestion()"
                             class="btn btn-success">
                             Next
                         </button>
@@ -52,12 +52,19 @@
                     {{ alertMessage }}
                     <p *ngIf="alertType === 'alert-danger' || alertType === 'alert-warning' ">{{ answerText }}</p>
                 </div>
-                <div style="padding-top: 5%;" class="padding">
+                <div style="padding-top: 30%;" class="padding">
                     <button class="center" (click)="nextQuestion()" class="btn btn-success">
                         Next Question
                     </button>
                 </div>
             </div>
         </div>
+    </section>
+
+    <section *ngIf="finished" style="padding-top: 10%; padding-bottom: 10%;">
+        <h1>GOOD JOB</h1>
+        <h2>{{totalAnswerableQuestions - totalWrong }} correct</h2>
+        <h2>{{ totalWrong }} incorrect</h2>
+        <h2>{{ (totalAnswerableQuestions - totalWrong) / totalAnswerableQuestions * 100 | number: '1.0-0'}}%</h2>
     </section>
 </main>
