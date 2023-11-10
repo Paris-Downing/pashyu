@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit() {
-      this.router.events.subscribe((event) => {
+        this.router.events.subscribe((event) => {
         this.isCollapsed = true;
         if (event instanceof NavigationStart) {
            if (event.url != this.lastPoppedUrl)
@@ -56,6 +56,6 @@ export class NavbarComponent implements OnInit {
 
     checkPage(): boolean {
         //also check to make sure they aren't already logged in
-        return this.router.url !== '/login' && this.router.url !== '/register';
+        return this.router.url === '/landing';
     }
 }
